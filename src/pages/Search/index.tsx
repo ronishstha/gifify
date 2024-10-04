@@ -16,6 +16,7 @@ const GifSearch = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [gifs, setGifs] = useState<Gif[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [error, setError] = useState<string | null>(null);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 400);
   const navigate = useNavigate();
   const { search, page } = useParams();
@@ -35,6 +36,7 @@ const GifSearch = () => {
   }, [debouncedSearchTerm, currentPage]);
 
   const fetchGifs = async () => {
+    setError(null);
     setLoading(true);
     try {
       const endpoint = buildEndpoint({
@@ -60,9 +62,9 @@ const GifSearch = () => {
       } else {
         throw new Error(data.meta.msg);
       }
-      
     } catch (error) {
       console.error("Error fetching GIFs:", error);
+      setError("Failed to fetch GIFs. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -89,7 +91,12 @@ const GifSearch = () => {
           placeholder="Search GIFs"
           onInputChange={handleSearchTermChange}
         />
-        <Results gifs={gifs} loading={loading} itemsPerPage={ITEMS_PER_PAGE} />
+        <Results
+          gifs={gifs}
+          loading={loading}
+          itemsPerPage={ITEMS_PER_PAGE}
+          error={error}
+        />
         {totalPages > 1 && (
           <PaginationControls
             currentPage={currentPage}
