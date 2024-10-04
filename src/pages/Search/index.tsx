@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { GIPHY_API_KEY, GIPHY_API_URL } from "@/config/config";
 import { Gif } from "@/types/common";
 import Results from "./Results";
+import PaginationControls from "./PaginationControls";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -48,6 +49,11 @@ const GifSearch = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -67,6 +73,13 @@ const GifSearch = () => {
           />
         </div>
         <Results gifs={gifs} loading={loading} itemsPerPage={ITEMS_PER_PAGE} />
+        {totalPages > 1 && (
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );
