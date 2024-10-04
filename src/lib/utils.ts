@@ -11,6 +11,7 @@ interface BuildEndpointParams {
   currentPage: number;
   itemsPerPage: number;
   apiURL: string;
+  tab: string;
 }
 
 export const buildEndpoint = ({
@@ -19,6 +20,7 @@ export const buildEndpoint = ({
   currentPage,
   itemsPerPage,
   apiURL,
+  tab,
 }: BuildEndpointParams): string => {
   const params = new URLSearchParams({
     api_key: apiKey,
@@ -29,8 +31,9 @@ export const buildEndpoint = ({
 
   const type = searchTerm ? "search" : "trending";
 
-  return `${apiURL}/${type}?${params}`;
+  return `${apiURL}/${tab}/${type}?${params}`;
 };
+
 
 export const replaceSpaceWithHyphens = (value: string): string => {
   return value?.replace(/(?<=\S) +(?=\S)/g, "-")?.replace(/ +/g, "");
@@ -42,13 +45,15 @@ export const replaceHyphensWithSpace = (value: string): string => {
 
 export const getNavigationURL = (
   searchTerm: string,
-  currentPage: number
+  currentPage: number,
+  activeTab: string
 ): string => {
   const modifiedSearchTerm = replaceSpaceWithHyphens(searchTerm);
+  const page = currentPage > 1 ? currentPage.toString() : "";
 
-  if (currentPage === 1) {
-    return `/${modifiedSearchTerm}`;
+  if (searchTerm) {
+    return `/${activeTab}/search/${modifiedSearchTerm}/${page}`;
   } else {
-    return `/${modifiedSearchTerm}/${currentPage}`;
+    return `/${activeTab}/${page}`;
   }
 };

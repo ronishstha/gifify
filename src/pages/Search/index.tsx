@@ -8,30 +8,37 @@ import {
   getNavigationURL,
   replaceHyphensWithSpace,
 } from "@/lib/utils";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import SearchInput from "./SearchInput";
 import ThemeToggler from "@/components/ThemeToggler";
+import Tab from "./Tab";
 
 const ITEMS_PER_PAGE = 12;
+type tabs = "gifs" | "stickers";
 
 const GifSearch = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const tab = location.pathname.split("/")[1];
   const { search, page } = useParams();
   const [searchTerm, setSearchTerm] = useState<string>(
     replaceHyphensWithSpace(search || "")
   );
-  const [currentPage, setCurrentPage] = useState<number>(parseInt(page || "1"));
+  const [currentPage, setCurrentPage] = useState<number>(
+    parseInt(page ?? "1") || 1
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [gifs, setGifs] = useState<Gif[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 400);
+  const [activeTab, setActiveTab] = useState<tabs>(tab as "gifs" | "stickers");
 
   useEffect(() => {
     fetchGifs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchTerm, currentPage]);
+  }, [debouncedSearchTerm, currentPage, tab]);
 
   const fetchGifs = async () => {
     setError(null);
@@ -43,6 +50,7 @@ const GifSearch = () => {
         itemsPerPage: ITEMS_PER_PAGE,
         currentPage,
         searchTerm: debouncedSearchTerm,
+        tab: activeTab,
       });
       const response = await fetch(endpoint);
       const data = await response.json();
@@ -50,7 +58,11 @@ const GifSearch = () => {
       if (data.meta.status === 200) {
         setGifs(data.data);
         setTotalPages(Math.ceil(data.pagination.total_count / ITEMS_PER_PAGE));
-        const navigationURL = getNavigationURL(searchTerm, currentPage);
+        const navigationURL = getNavigationURL(
+          searchTerm,
+          currentPage,
+          activeTab
+        );
 
         navigate(navigationURL, { replace: true });
       } else {
@@ -71,7 +83,14 @@ const GifSearch = () => {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    const navigationURL = getNavigationURL(searchTerm, currentPage);
+    const navigationURL = getNavigationURL(searchTerm, currentPage, activeTab);
+    navigate(navigationURL);
+  };
+
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab as tabs);
+    setCurrentPage(1);
+    const navigationURL = getNavigationURL(searchTerm, 1, newTab);
     navigate(navigationURL);
   };
 
@@ -87,6 +106,7 @@ const GifSearch = () => {
           placeholder="Search GIFs"
           onInputChange={handleSearchTermChange}
         />
+        <Tab activeTab={activeTab} onTabChange={handleTabChange} />
         <Results
           gifs={gifs}
           loading={loading}
