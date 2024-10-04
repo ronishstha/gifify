@@ -3,11 +3,12 @@ import { Gif } from "@/types/common";
 
 interface GifCardProps {
   gif: Gif;
+  onGifClick: (gif: Gif) => void;
 }
 
-const GifCard = ({ gif }: GifCardProps) => {
+const GifCard = ({ gif, onGifClick }: GifCardProps) => {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden cursor-pointer" onClick={() => onGifClick(gif)}>
       <CardContent className="p-0 relative group">
         <div className="w-full h-48 bg-muted animate-pulse absolute top-0 left-0"></div>
         <img

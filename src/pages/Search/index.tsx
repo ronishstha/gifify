@@ -51,7 +51,6 @@ const GifSearch = () => {
         setGifs(data.data);
         setTotalPages(Math.ceil(data.pagination.total_count / ITEMS_PER_PAGE));
         const navigationURL = getNavigationURL(searchTerm, currentPage);
-        console.log('navigationUrl', navigationURL);
 
         navigate(navigationURL, { replace: true });
       } else {

@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Gif } from "@/types/common";
 import GifCard from "./GifCard";
+import GifModal from "./GifModal";
+import { useState } from "react";
 
 interface ResultsProps {
   gifs: Gif[];
@@ -10,6 +12,8 @@ interface ResultsProps {
 }
 
 const Results = ({ gifs, loading, itemsPerPage, error }: ResultsProps) => {
+  const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   if (error) {
     return <div className="text-red-400 text-center mb-4">{error}</div>;
   }
@@ -22,6 +26,16 @@ const Results = ({ gifs, loading, itemsPerPage, error }: ResultsProps) => {
     );
   }
 
+  const handleGifClick = (gif: Gif) => {
+    setSelectedGif(gif);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedGif(null);
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
       {loading
@@ -32,7 +46,14 @@ const Results = ({ gifs, loading, itemsPerPage, error }: ResultsProps) => {
               </CardContent>
             </Card>
           ))
-        : gifs.map((gif) => <GifCard gif={gif} key={gif.id} />)}
+        : gifs.map((gif) => (
+            <GifCard gif={gif} key={gif.id} onGifClick={handleGifClick} />
+          ))}
+      <GifModal
+        gif={selectedGif}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };
