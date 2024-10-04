@@ -4,7 +4,7 @@ import Search from "./pages/Search";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "/:search?/:page?",
       element: <Search />,
     },
   ]);
