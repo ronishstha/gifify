@@ -43,7 +43,7 @@ This project requires a GIPHY API key to function. Follow these steps to set up 
 2. Open the `.env` file and replace the placeholder values with your actual GIPHY API key:
    ```
    VITE_GIPHY_API_KEY=your_giphy_api_key_here
-   VITE_GIPHY_API_URL=https://api.giphy.com/v1/gifs
+   VITE_GIPHY_API_URL=https://api.giphy.com/v1
    ```
 
 3. Replace `your_giphy_api_key_here` with your actual GIPHY API key. You can obtain an API key by creating an account at [https://developers.giphy.com/](https://developers.giphy.com/).
