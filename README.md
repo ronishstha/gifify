@@ -1,50 +1,49 @@
-# React + TypeScript + Vite
+# GIFIFY
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GIFIFY is a React-based web application that allows users to search and view GIFs using the GIPHY API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Search for GIFs
+- View trending GIFs
+- Responsive layout
+- Modal view for full-size GIFs
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/gifify.git
+   cd gifify
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+3. Set up environment variables (see Environment Setup section below)
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+4. Start the development server:
+   ```
+   npm run dev
+   ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+5. Open your browser and navigate to `http://localhost:5173` (or the port specified by your development server)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Environment Setup
+
+This project requires a GIPHY API key to function. Follow these steps to set up your environment:
+
+1. Copy the `.env.example` file in the root directory and rename it to `.env`:
+   ```
+   cp .env.example .env
+   ```
+
+2. Open the `.env` file and replace the placeholder values with your actual GIPHY API key:
+   ```
+   VITE_GIPHY_API_KEY=your_giphy_api_key_here
+   VITE_GIPHY_API_URL=https://api.giphy.com/v1/gifs
+   ```
+
+3. Replace `your_giphy_api_key_here` with your actual GIPHY API key. You can obtain an API key by creating an account at [https://developers.giphy.com/](https://developers.giphy.com/).
