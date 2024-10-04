@@ -20,7 +20,7 @@ const GifCard = ({ gif }: GifCardProps) => {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"></div>
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-30">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-250 z-30">
           <p className="text-sm font-medium line-clamp-2">{gif.title}</p>
         </div>
       </CardContent>

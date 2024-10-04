@@ -31,3 +31,24 @@ export const buildEndpoint = ({
 
   return `${apiURL}/${type}?${params}`;
 };
+
+export const replaceSpaceWithHyphens = (value: string): string => {
+  return value?.replace(/(?<=\S) +(?=\S)/g, "-")?.replace(/ +/g, "");
+};
+
+export const replaceHyphensWithSpace = (value: string): string => {
+  return value?.replace(/-/g, " ");
+};
+
+export const getNavigationURL = (
+  searchTerm: string,
+  currentPage: number
+): string => {
+  const modifiedSearchTerm = replaceSpaceWithHyphens(searchTerm);
+
+  if (currentPage === 1) {
+    return `/${modifiedSearchTerm}`;
+  } else {
+    return `/${modifiedSearchTerm}/${currentPage}`;
+  }
+};

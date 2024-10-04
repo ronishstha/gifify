@@ -3,33 +3,30 @@ import { GIPHY_API_KEY, GIPHY_API_URL } from "@/config/config";
 import { Gif } from "@/types/common";
 import Results from "./Results";
 import PaginationControls from "./PaginationControls";
-import { buildEndpoint } from "@/lib/utils";
+import {
+  buildEndpoint,
+  getNavigationURL,
+  replaceHyphensWithSpace,
+} from "@/lib/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import SearchInput from "./SearchInput";
 import ThemeToggler from "@/components/ThemeToggler";
 
-const ITEMS_PER_PAGE = 1;
+const ITEMS_PER_PAGE = 12;
 
 const GifSearch = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate();
+  const { search, page } = useParams();
+  const [searchTerm, setSearchTerm] = useState<string>(
+    replaceHyphensWithSpace(search || "")
+  );
+  const [currentPage, setCurrentPage] = useState<number>(parseInt(page || "1"));
   const [loading, setLoading] = useState<boolean>(false);
   const [gifs, setGifs] = useState<Gif[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 400);
-  const navigate = useNavigate();
-  const { search, page } = useParams();
-
-  useEffect(() => {
-    if (search) {
-      setSearchTerm(search.replace(/-/g, " "));
-      if (page) {
-        setCurrentPage(parseInt(page) || 1);
-      }
-    }
-  }, [search, page]);
 
   useEffect(() => {
     fetchGifs();
@@ -53,13 +50,10 @@ const GifSearch = () => {
       if (data.meta.status === 200) {
         setGifs(data.data);
         setTotalPages(Math.ceil(data.pagination.total_count / ITEMS_PER_PAGE));
-        const modifiedSearchTerm = searchTerm.replace(/(?<=\S) +/g, "-");
-        navigate(
-          currentPage === 1
-            ? `/${modifiedSearchTerm}`
-            : `/${modifiedSearchTerm}/${currentPage}`,
-          { replace: true }
-        );
+        const navigationURL = getNavigationURL(searchTerm, currentPage);
+        console.log('navigationUrl', navigationURL);
+
+        navigate(navigationURL, { replace: true });
       } else {
         throw new Error(data.meta.msg);
       }
@@ -78,7 +72,8 @@ const GifSearch = () => {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    navigate(newPage === 1 ? `/${searchTerm}` : `/${searchTerm}/${newPage}`);
+    const navigationURL = getNavigationURL(searchTerm, currentPage);
+    navigate(navigationURL);
   };
 
   return (
