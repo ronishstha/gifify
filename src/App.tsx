@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Search from "./pages/Search";
+import { ThemeProvider } from "next-themes";
 
 function App() {
   const router = createBrowserRouter([
@@ -9,7 +10,11 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider attribute="class">
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
 
 export default App;
